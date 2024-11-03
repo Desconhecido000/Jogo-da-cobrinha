@@ -15,24 +15,27 @@
     }
     .buttons {
       display: flex;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
       margin-top: 10px;
     }
     .control {
       display: flex;
-      flex-direction: column;
       justify-content: center;
-      align-items: center;
+      margin: 5px;
     }
     button {
-      padding: 10px 20px;
-      margin: 5px;
+      padding: 20px;
       font-size: 1.2em;
       border: none;
       border-radius: 5px;
       background-color: #fff;
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      margin: 5px;
+      width: 60px; /* Largura dos botões */
+      height: 60px; /* Altura dos botões */
     }
     button:hover {
       background-color: #f0f0f0;
@@ -47,6 +50,12 @@
       display: none;
       margin: 10px;
     }
+    .game-field {
+      background-color: yellow; /* Campo amarelo */
+      position: relative;
+      width: 400px;
+      height: 400px;
+    }
   </style>
 </head>
 <body>
@@ -56,11 +65,24 @@
     <input type="text" id="playerName" placeholder="Digite seu nome" />
     <button onclick="startGameWithName()">Iniciar Jogo</button>
   </div>
-  <canvas id="game" width="400" height="400" style="display:none;"></canvas>
-  
+  <div class="game-field">
+    <canvas id="game" width="400" height="400" style="display:none;"></canvas>
+  </div>
+
   <div class="message" id="gameOverMessage">Você pecou</div>
   <div class="message" id="scoreMessage" style="display:none;"></div>
   <button id="restartButton" style="display:none;" onclick="restartGame()">Recomeçar</button>
+
+  <div class="buttons">
+    <div class="control">
+      <button onclick="changeDirection('up')">↑</button>
+    </div>
+    <div class="control">
+      <button onclick="changeDirection('left')">←</button>
+      <button onclick="changeDirection('down')">↓</button>
+      <button onclick="changeDirection('right')">→</button>
+    </div>
+  </div>
 
   <script>
     const canvas = document.getElementById("game");
@@ -91,10 +113,8 @@
     }
 
     function drawBackground() {
-      context.fillStyle = "#003366"; // Fundo azul escuro
+      context.fillStyle = "yellow"; // Campo amarelo
       context.fillRect(0, 0, canvas.width, canvas.height);
-      context.fillStyle = "yellow"; // Chão da quadra
-      context.fillRect(0, canvas.height - box, canvas.width, box);
     }
 
     function drawSnake() {
@@ -106,7 +126,7 @@
 
     function drawFood() {
       const foodImg = new Image();
-      foodImg.src = "https://img.icons8.com/emoji/48/000000/volleyball.png"; // Imagem de bola de vôlei
+      foodImg.src = "https://img.icons8.com/color/48/000000/volleyball.png"; // Imagem de bola de vôlei colorida
       foodImg.onload = () => {
         context.drawImage(foodImg, food.x, food.y, box, box);
       };
