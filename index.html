@@ -18,6 +18,12 @@
       justify-content: center;
       margin-top: 10px;
     }
+    .control {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     button {
       padding: 10px 20px;
       margin: 5px;
@@ -31,30 +37,53 @@
     button:hover {
       background-color: #f0f0f0;
     }
+    .message {
+      color: red;
+      font-size: 1.5em;
+      margin: 10px 0;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Xandão - Igreja Presbiteriana Água Viva</h1>
   <canvas id="game" width="400" height="400"></canvas>
   
+  <div class="message" id="gameOverMessage">Você pecou</div>
+  
   <div class="buttons">
-    <button onclick="changeDirection('left')">←</button>
-    <button onclick="changeDirection('up')">↑</button>
-    <button onclick="changeDirection('down')">↓</button>
-    <button onclick="changeDirection('right')">→</button>
+    <div class="control">
+      <button onclick="changeDirection('up')">↑</button>
+      <div>
+        <button onclick="changeDirection('left')">←</button>
+        <button onclick="changeDirection('right')">→</button>
+      </div>
+      <button onclick="changeDirection('down')">↓</button>
+    </div>
   </div>
+  
+  <button id="restartButton" style="display:none;" onclick="restartGame()">Recomeçar</button>
 
   <script>
     const canvas = document.getElementById("game");
     const context = canvas.getContext("2d");
+    const message = document.getElementById("gameOverMessage");
+    const restartButton = document.getElementById("restartButton");
 
     const box = 20;
-    let snake = [{ x: 8 * box, y: 8 * box }];
-    let direction = "right";
-    let food = {
-      x: Math.floor(Math.random() * 19) * box,
-      y: Math.floor(Math.random() * 19) * box
-    };
+    let snake, direction, food, game;
+
+    function initializeGame() {
+      snake = [{ x: 8 * box, y: 8 * box }];
+      direction = "right";
+      food = {
+        x: Math.floor(Math.random() * 19) * box,
+        y: Math.floor(Math.random() * 19) * box
+      };
+      message.style.display = "none";
+      restartButton.style.display = "none";
+      game = setInterval(startGame, 100);
+    }
 
     function drawBackground() {
       context.fillStyle = "#87CEEB";
@@ -108,7 +137,8 @@
       const newHead = { x: snakeX, y: snakeY };
       if (snake.some(part => part.x === newHead.x && part.y === newHead.y) || snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height) {
         clearInterval(game);
-        alert("Game Over");
+        message.style.display = "block";
+        restartButton.style.display = "block";
       }
       
       snake.unshift(newHead);
@@ -121,7 +151,11 @@
       updateGame();
     }
 
-    const game = setInterval(startGame, 100);
+    function restartGame() {
+      initializeGame();
+    }
+
+    initializeGame();
   </script>
 </body>
 </html>
