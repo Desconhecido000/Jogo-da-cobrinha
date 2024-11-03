@@ -54,7 +54,7 @@
   <h2 id="welcomeMessage">Você é um canal de benção em Jesus</h2>
   <div class="name-input" id="nameInputDiv">
     <input type="text" id="playerName" placeholder="Digite seu nome" />
-    <button onclick="startGame()">Iniciar Jogo</button>
+    <button onclick="startGameWithName()">Iniciar Jogo</button>
   </div>
   <canvas id="game" width="400" height="400" style="display:none;"></canvas>
   
@@ -160,8 +160,6 @@
     }
 
     function startGame() {
-      if (!playerName) return;
-      welcomeMessage.innerText = "Vamos vencer em Cristo Jesus, " + playerName + "!";
       drawBackground();
       drawSnake();
       drawFood();
@@ -169,9 +167,14 @@
     }
 
     function startGameWithName() {
-      playerName = playerNameInput.value;
-      nameInputDiv.style.display = "none";
-      initializeGame();
+      playerName = playerNameInput.value.trim();
+      if (playerName) {
+        welcomeMessage.innerText = "Vamos vencer em Cristo Jesus, " + playerName + "!";
+        nameInputDiv.style.display = "none";
+        initializeGame();
+      } else {
+        alert("Por favor, digite seu nome.");
+      }
     }
 
     function restartGame() {
