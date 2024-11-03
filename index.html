@@ -71,6 +71,7 @@
 
   <div class="message" id="gameOverMessage">Você pecou</div>
   <div class="message" id="scoreMessage" style="display:none;"></div>
+  <div class="message" id="foodCountMessage" style="display:none;"></div>
   <button id="restartButton" style="display:none;" onclick="restartGame()">Recomeçar</button>
 
   <div class="buttons">
@@ -92,24 +93,31 @@
     const playerNameInput = document.getElementById("playerName");
     const message = document.getElementById("gameOverMessage");
     const scoreMessage = document.getElementById("scoreMessage");
+    const foodCountMessage = document.getElementById("foodCountMessage");
     const restartButton = document.getElementById("restartButton");
 
     const box = 20;
-    let snake, direction, food, game, score, playerName;
+    let snake, direction, food, game, score, foodCount, playerName;
 
     function initializeGame() {
       snake = [{ x: 8 * box, y: 8 * box }];
       direction = "right";
-      food = {
-        x: Math.floor(Math.random() * 19) * box,
-        y: Math.floor(Math.random() * 19) * box
-      };
+      food = generateFood();
       score = 0;
+      foodCount = 0;
       message.style.display = "none";
       scoreMessage.style.display = "none";
+      foodCountMessage.style.display = "none";
       restartButton.style.display = "none";
       canvas.style.display = "block";
       game = setInterval(startGame, 100);
+    }
+
+    function generateFood() {
+      return {
+        x: Math.floor(Math.random() * 19) * box,
+        y: Math.floor(Math.random() * 19) * box
+      };
     }
 
     function drawBackground() {
@@ -156,15 +164,8 @@
       if (direction === "down") snakeY += box;
 
       if (snakeX === food.x && snakeY === food.y) {
-        food = {
-          x: Math.floor(Math.random() * 19) * box,
-          y: Math.floor(Math.random() * 19) * box
-        };
-        score++;
-        if (score === 10) {
-          scoreMessage.innerText = "Você não chegou aqui por acaso";
-          scoreMessage.style.display = "block";
-        }
+        foodCount++; // Aumenta o contador de alimentos
+        food = generateFood(); // Gera novo alimento
       } else {
         snake.pop();
       }
@@ -177,6 +178,15 @@
       }
       
       snake.unshift(newHead);
+      updateScore();
+    }
+
+    function updateScore() {
+      score++;
+      scoreMessage.innerText = `Pontos: ${score}`;
+      foodCountMessage.innerText = `Alimentos consumidos: ${foodCount}`;
+      scoreMessage.style.display = "block";
+      foodCountMessage.style.display = "block";
     }
 
     function startGame() {
