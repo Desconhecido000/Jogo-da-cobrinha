@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo da Cobrinha - Xandão</title>
+  <title>Água Viva</title>
   <style>
-    body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #87CEEB; }
+    body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #003366; }
     canvas { border: 1px solid #000; }
-    h1 {
+    h1, h2 {
       color: white;
       font-size: 2em;
       font-family: Arial, sans-serif;
@@ -43,35 +43,37 @@
       margin: 10px 0;
       display: none;
     }
+    .name-input {
+      display: none;
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Xandão - Igreja Presbiteriana Água Viva</h1>
-  <canvas id="game" width="400" height="400"></canvas>
+  <h1>Água Viva</h1>
+  <h2 id="welcomeMessage">Você é um canal de benção em Jesus</h2>
+  <div class="name-input" id="nameInputDiv">
+    <input type="text" id="playerName" placeholder="Digite seu nome" />
+    <button onclick="startGame()">Iniciar Jogo</button>
+  </div>
+  <canvas id="game" width="400" height="400" style="display:none;"></canvas>
   
   <div class="message" id="gameOverMessage">Você pecou</div>
-  
-  <div class="buttons">
-    <div class="control">
-      <button onclick="changeDirection('up')">↑</button>
-      <div>
-        <button onclick="changeDirection('left')">←</button>
-        <button onclick="changeDirection('right')">→</button>
-      </div>
-      <button onclick="changeDirection('down')">↓</button>
-    </div>
-  </div>
-  
+  <div class="message" id="scoreMessage" style="display:none;"></div>
   <button id="restartButton" style="display:none;" onclick="restartGame()">Recomeçar</button>
 
   <script>
     const canvas = document.getElementById("game");
     const context = canvas.getContext("2d");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const nameInputDiv = document.getElementById("nameInputDiv");
+    const playerNameInput = document.getElementById("playerName");
     const message = document.getElementById("gameOverMessage");
+    const scoreMessage = document.getElementById("scoreMessage");
     const restartButton = document.getElementById("restartButton");
 
     const box = 20;
-    let snake, direction, food, game;
+    let snake, direction, food, game, score, playerName;
 
     function initializeGame() {
       snake = [{ x: 8 * box, y: 8 * box }];
@@ -80,14 +82,19 @@
         x: Math.floor(Math.random() * 19) * box,
         y: Math.floor(Math.random() * 19) * box
       };
+      score = 0;
       message.style.display = "none";
+      scoreMessage.style.display = "none";
       restartButton.style.display = "none";
+      canvas.style.display = "block";
       game = setInterval(startGame, 100);
     }
 
     function drawBackground() {
-      context.fillStyle = "#87CEEB";
+      context.fillStyle = "#003366"; // Fundo azul escuro
       context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = "yellow"; // Chão da quadra
+      context.fillRect(0, canvas.height - box, canvas.width, box);
     }
 
     function drawSnake() {
@@ -98,8 +105,11 @@
     }
 
     function drawFood() {
-      context.fillStyle = "red";
-      context.fillRect(food.x, food.y, box, box);
+      const foodImg = new Image();
+      foodImg.src = "https://img.icons8.com/emoji/48/000000/volleyball.png"; // Imagem de bola de vôlei
+      foodImg.onload = () => {
+        context.drawImage(foodImg, food.x, food.y, box, box);
+      };
     }
 
     function changeDirection(newDirection) {
@@ -130,6 +140,11 @@
           x: Math.floor(Math.random() * 19) * box,
           y: Math.floor(Math.random() * 19) * box
         };
+        score++;
+        if (score === 10) {
+          scoreMessage.innerText = "Você não chegou aqui por acaso";
+          scoreMessage.style.display = "block";
+        }
       } else {
         snake.pop();
       }
@@ -145,17 +160,32 @@
     }
 
     function startGame() {
+      if (!playerName) return;
+      welcomeMessage.innerText = "Vamos vencer em Cristo Jesus, " + playerName + "!";
       drawBackground();
       drawSnake();
       drawFood();
       updateGame();
     }
 
+    function startGameWithName() {
+      playerName = playerNameInput.value;
+      nameInputDiv.style.display = "none";
+      initializeGame();
+    }
+
     function restartGame() {
       initializeGame();
     }
 
-    initializeGame();
+    // Exibir a tela inicial
+    nameInputDiv.style.display = "block";
+    playerNameInput.focus();
+    document.getElementById("playerName").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        startGameWithName();
+      }
+    });
   </script>
 </body>
 </html>
