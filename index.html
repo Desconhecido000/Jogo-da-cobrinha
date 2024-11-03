@@ -3,23 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo da Cobrinha</title>
+  <title>Jogo da Cobrinha - Xandão</title>
   <style>
-    body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #87CEEB; }
+    body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #87CEEB; }
     canvas { border: 1px solid #000; }
     h1 {
-      position: absolute;
-      top: 10%;
       color: white;
       font-size: 2em;
       font-family: Arial, sans-serif;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    button:hover {
+      background-color: #f0f0f0;
+    }
   </style>
 </head>
 <body>
-  <h1>Igreja Presbiteriana Água Viva</h1>
+  <h1>Xandão - Igreja Presbiteriana Água Viva</h1>
   <canvas id="game" width="400" height="400"></canvas>
+  
+  <div class="buttons">
+    <button onclick="changeDirection('left')">←</button>
+    <button onclick="changeDirection('up')">↑</button>
+    <button onclick="changeDirection('down')">↓</button>
+    <button onclick="changeDirection('right')">→</button>
+  </div>
 
   <script>
     const canvas = document.getElementById("game");
@@ -50,11 +73,18 @@
       context.fillRect(food.x, food.y, box, box);
     }
 
+    function changeDirection(newDirection) {
+      if (newDirection === "left" && direction !== "right") direction = "left";
+      else if (newDirection === "up" && direction !== "down") direction = "up";
+      else if (newDirection === "right" && direction !== "left") direction = "right";
+      else if (newDirection === "down" && direction !== "up") direction = "down";
+    }
+
     document.addEventListener("keydown", event => {
-      if (event.key === "ArrowLeft" && direction !== "right") direction = "left";
-      else if (event.key === "ArrowUp" && direction !== "down") direction = "up";
-      else if (event.key === "ArrowRight" && direction !== "left") direction = "right";
-      else if (event.key === "ArrowDown" && direction !== "up") direction = "down";
+      if (event.key === "ArrowLeft") changeDirection("left");
+      else if (event.key === "ArrowUp") changeDirection("up");
+      else if (event.key === "ArrowRight") changeDirection("right");
+      else if (event.key === "ArrowDown") changeDirection("down");
     });
 
     function updateGame() {
